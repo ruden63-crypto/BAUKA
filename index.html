@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOCUS Copilot — AI-ментор для поступления</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0A0D14; }
+    .bg-gradient-glow { background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 70%); }
+    .glass-card { background: rgba(20, 25, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .btn-gradient { background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%); }
+  </style>
+</head>
+<body class="text-slate-200 antialiased min-h-screen bg-gradient-glow">
+
+  <!-- Header / Navigation -->
+  <header class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center border-b border-slate-800/60">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 btn-gradient rounded-xl flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/30">L</div>
+      <span class="font-bold text-xl tracking-tight text-white">LOCUS <span class="text-indigo-400">Copilot</span></span>
+    </div>
+    <div class="flex gap-4 items-center">
+      <span class="text-xs bg-indigo-500/10 text-indigo-400 px-3 py-1.5 rounded-full border border-indigo-500/20 font-medium">Hackathon Demo</span>
+      <button class="bg-slate-800 hover:bg-slate-700 text-sm px-4 py-2 rounded-xl transition text-white font-medium">Войти</button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="max-w-5xl mx-auto text-center px-6 pt-16 pb-12">
+    <div class="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-1.5 rounded-full text-xs text-indigo-400 font-medium mb-6">
+      <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span> Next-Gen EdTech Platform
+    </div>
+    <h1 class="text-4xl sm:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
+      Твой персональный <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">AI-ментор</span> для поступления
+    </h1>
+    <p class="text-slate-400 text-lg max-w-2xl mx-auto mb-8">
+      Мгновенный разбор мотивационных эссе, проверка шансов на грант и подготовка к собеседованию с помощью искусственного интеллекта.
+    </p>
+  </section>
+
+  <!-- Workspace / Live Demo Section -->
+  <main class="max-w-7xl mx-auto px-6 pb-24">
+    <div class="grid lg:grid-cols-2 gap-8">
+      
+      <!-- Left Panel: Input -->
+      <div class="glass-card rounded-3xl p-6 flex flex-col justify-between shadow-2xl">
+        <div>
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="font-bold text-lg text-white">Проверка эссе</h2>
+            <select class="bg-slate-900 border border-slate-800 text-xs text-slate-300 rounded-lg px-3 py-1.5 outline-none">
+              <option>Harvard University — Personal Statement</option>
+              <option>Stanford University — Supplemental Essay</option>
+              <option>KAIST — Motivation Letter</option>
+            </select>
+          </div>
+          <textarea 
+            class="w-full h-80 bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 transition resize-none"
+            placeholder="Вставьте сюда текст вашего мотивационного письма..."></textarea>
+        </div>
+        <div class="mt-6 flex justify-between items-center">
+          <span class="text-xs text-slate-500">Слов: 342 / 650</span>
+          <button class="btn-gradient hover:opacity-90 text-white font-semibold text-sm px-6 py-3 rounded-xl transition shadow-lg shadow-indigo-500/25 flex items-center gap-2">
+            <span>✨ Анализировать эссе</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Panel: AI Results -->
+      <div class="glass-card rounded-3xl p-6 flex flex-col justify-between border-indigo-500/20">
+        <div>
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="font-bold text-lg text-white">Результат AI-анализа</h2>
+            <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-semibold">Готово</span>
+          </div>
+
+          <!-- Score Card -->
+          <div class="bg-slate-900/80 rounded-2xl p-4 flex items-center justify-between mb-6 border border-slate-800">
+            <div>
+              <span class="text-xs text-slate-400 font-medium uppercase tracking-wider">Общий балл</span>
+              <div class="text-3xl font-extrabold text-white">86 <span class="text-sm text-slate-500 font-normal">/ 100</span></div>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-emerald-400 font-medium">Выше среднего</span>
+              <p class="text-xs text-slate-400">Шанс прохождения: ~75%</p>
+            </div>
+          </div>
+
+          <!-- Detailed Feedback -->
+          <div class="space-y-3">
+            <div class="bg-slate-950/40 p-3.5 rounded-xl border border-emerald-500/20 text-xs">
+              <span class="font-bold text-emerald-400 block mb-1">🟢 Отличное начало</span>
+              <p class="text-slate-300">Введение цепляет внимание. Четко выражена страсть к направлению Computer Science.</p>
+            </div>
+            <div class="bg-slate-950/40 p-3.5 rounded-xl border border-amber-500/20 text-xs">
+              <span class="font-bold text-amber-400 block mb-1">⚠️ Требует улучшения (Абзац 3)</span>
+              <p class="text-slate-300">Слишком общая фраза <i>«I am a hard working person»</i>. Замените её конкретным кейсом из вашего хакатона или проекта.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="mt-6 pt-4 border-t border-slate-800/80 flex gap-3">
+          <button class="w-full bg-slate-900 hover:bg-slate-800 text-xs py-2.5 rounded-xl transition text-slate-300 border border-slate-800 font-medium">
+            Сгенерировать улучшение
+          </button>
+          <button class="w-full bg-slate-900 hover:bg-slate-800 text-xs py-2.5 rounded-xl transition text-slate-300 border border-slate-800 font-medium">
+            Скачать PDF-отчет
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>
