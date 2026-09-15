@@ -1,40 +1,48 @@
 export default async function handler(req, res) {
+  // Настройка CORS (чтобы браузер не блокировал запросы)
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
-
-  const { essay, university } = req.body;
-
-  if (!essay) {
-    return res.status(400).json({ error: 'Essay text is required' });
-  }
-
-  const apiKey = process.env.OPENAI_API_KEY;
-
-  if (!apiKey) {
-    return res.status(500).json({ error: 'OPENAI_API_KEY environment variable is missing on server.' });
-  }
-
-  const prompt = `
-  Ты — член приемной комиссии университета (${university}). 
-  Проанализируй следующее эссе абитуриента и верни ответ СТРОГО в виде валидного JSON (без markdown тегов).
-  
-  JSON должен содержать ключи:
-  {
-    "score": number (от 0 до 100),
-    "verdict": "string (например: Отлично / Выше среднего / Требуется доработка)",
-    "chance": "string (например: 80%)",
-    "strengths": "string (2-3 предложения с плюсами)",
-    "weaknesses": "string (2-3 предложения с минусами)",
-    "recommendation": "string (конкретный совет по улучшению)"
-  }
-
-  Эссе:
-  "${essay}"
-  `;
 
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const { essay, university } = req.body || {};
+
+    if (!essay) {
+      return res.status(400).json({ error: 'Текст эссе отсутствует' });
+    }
+
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: 'Ключ OPENAI_API_KEY не найден в Environment Variables Vercel!' });
+    }
+
+    const prompt = `
+    Ты — эксперт приемной комиссии университета (${university || 'Top University'}). 
+    Проанализируй мотивационное письмо и верни ответ СТРОГО в формате валидного JSON (без markdown и без текста вне JSON).
+
+    Структура JSON:
+    {
+      "score": 75,
+      "verdict": "Требует доработки",
+      "chance": "60%",
+      "strengths": "Пример сильных сторон...",
+      "weaknesses": "Пример слабых сторон...",
+      "recommendation": "Пример рекомендаций..."
+    }
+
+    Текст эссе:
+    "${essay.replace(/"/g, '\\"')}"
+    `;
+
+    const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -43,23 +51,20 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: "gpt-4o",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.7
+        response_format: { type: "json_object" }
       })
     });
 
-    const data = await response.json();
+    const data = await openaiRes.json();
 
     if (data.error) {
       return res.status(500).json({ error: data.error.message });
     }
 
-    const rawContent = data.choices[0].message.content;
-    const cleanJson = rawContent.replace(/```json|```/g, '').trim();
-    const parsedData = JSON.parse(cleanJson);
+    const parsedJson = JSON.parse(data.choices[0].message.content);
+    return res.status(200).json(parsedJson);
 
-    return res.status(200).json(parsedData);
-
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
+  } catch (err) {
+    return res.status(500).json({ error: "Ошибка сервера: " + err.message });
   }
 }
