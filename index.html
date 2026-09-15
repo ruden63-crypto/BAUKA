@@ -23,21 +23,25 @@
     </div>
     <div class="flex gap-4 items-center">
       <span class="text-xs bg-indigo-500/10 text-indigo-400 px-3 py-1.5 rounded-full border border-indigo-500/20 font-medium">Hackathon Demo</span>
-      <button class="bg-slate-800 hover:bg-slate-700 text-sm px-4 py-2 rounded-xl transition text-white font-medium">Войти</button>
     </div>
   </header>
 
   <!-- Hero Section -->
-  <section class="max-w-5xl mx-auto text-center px-6 pt-16 pb-12">
-    <div class="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-1.5 rounded-full text-xs text-indigo-400 font-medium mb-6">
+  <section class="max-w-5xl mx-auto text-center px-6 pt-12 pb-8">
+    <div class="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-1.5 rounded-full text-xs text-indigo-400 font-medium mb-4">
       <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span> Next-Gen EdTech Platform
     </div>
-    <h1 class="text-4xl sm:text-6xl font-extrabold text-white tracking-tight leading-tight mb-6">
-      Твой персональный <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">AI-ментор</span> для поступления
+    <h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4">
+      Твой персональный <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">AI-ментор</span>
     </h1>
-    <p class="text-slate-400 text-lg max-w-2xl mx-auto mb-8">
-      Мгновенный разбор мотивационных эссе, проверка шансов на грант и подготовка к собеседованию с помощью искусственного интеллекта.
+    <p class="text-slate-400 text-base max-w-2xl mx-auto mb-6">
+      Мгновенный разбор мотивационных эссе и оценка шансов на поступление с помощью ИИ.
     </p>
+
+    <!-- API Key Input (Для демо на хакатоне) -->
+    <div class="max-w-md mx-auto mb-8 bg-slate-900/90 border border-slate-800 p-3 rounded-2xl flex gap-2 items-center">
+      <input type="password" id="api-key" placeholder="Вставьте ваш OpenAI API Key (sk-...)" class="w-full bg-transparent text-xs text-slate-200 px-3 focus:outline-none placeholder-slate-500">
+    </div>
   </section>
 
   <!-- Workspace / Live Demo Section -->
@@ -48,21 +52,23 @@
       <div class="glass-card rounded-3xl p-6 flex flex-col justify-between shadow-2xl">
         <div>
           <div class="flex justify-between items-center mb-4">
-            <h2 class="font-bold text-lg text-white">Проверка эссе</h2>
-            <select class="bg-slate-900 border border-slate-800 text-xs text-slate-300 rounded-lg px-3 py-1.5 outline-none">
+            <h2 class="font-bold text-lg text-white">Ввод эссе</h2>
+            <select id="univ-select" class="bg-slate-900 border border-slate-800 text-xs text-slate-300 rounded-lg px-3 py-1.5 outline-none">
               <option>Harvard University — Personal Statement</option>
               <option>Stanford University — Supplemental Essay</option>
               <option>KAIST — Motivation Letter</option>
+              <option>Nazarbayev University — Personal Statement</option>
             </select>
           </div>
           <textarea 
+            id="essay-input"
             class="w-full h-80 bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 transition resize-none"
-            placeholder="Вставьте сюда текст вашего мотивационного письма..."></textarea>
+            placeholder="Вставьте сюда текст вашего мотивационного письма на английском..."></textarea>
         </div>
         <div class="mt-6 flex justify-between items-center">
-          <span class="text-xs text-slate-500">Слов: 342 / 650</span>
-          <button class="btn-gradient hover:opacity-90 text-white font-semibold text-sm px-6 py-3 rounded-xl transition shadow-lg shadow-indigo-500/25 flex items-center gap-2">
-            <span>✨ Анализировать эссе</span>
+          <span id="word-count" class="text-xs text-slate-500">Слов: 0</span>
+          <button onclick="analyzeEssay()" id="submit-btn" class="btn-gradient hover:opacity-90 text-white font-semibold text-sm px-6 py-3 rounded-xl transition shadow-lg shadow-indigo-500/25 flex items-center gap-2">
+            <span>✨ Проанализировать через AI</span>
           </button>
         </div>
       </div>
@@ -72,47 +78,150 @@
         <div>
           <div class="flex justify-between items-center mb-6">
             <h2 class="font-bold text-lg text-white">Результат AI-анализа</h2>
-            <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-semibold">Готово</span>
+            <span id="status-badge" class="text-xs bg-slate-800 text-slate-400 px-3 py-1 rounded-full border border-slate-700 font-semibold">Ожидание ввода</span>
           </div>
 
           <!-- Score Card -->
           <div class="bg-slate-900/80 rounded-2xl p-4 flex items-center justify-between mb-6 border border-slate-800">
             <div>
               <span class="text-xs text-slate-400 font-medium uppercase tracking-wider">Общий балл</span>
-              <div class="text-3xl font-extrabold text-white">86 <span class="text-sm text-slate-500 font-normal">/ 100</span></div>
+              <div class="text-3xl font-extrabold text-white"><span id="score-val">--</span> <span class="text-sm text-slate-500 font-normal">/ 100</span></div>
             </div>
             <div class="text-right">
-              <span class="text-xs text-emerald-400 font-medium">Выше среднего</span>
-              <p class="text-xs text-slate-400">Шанс прохождения: ~75%</p>
+              <span id="verdict-val" class="text-xs text-slate-400 font-medium">Введите текст</span>
+              <p id="chance-val" class="text-xs text-slate-500">Шанс: --</p>
             </div>
           </div>
 
-          <!-- Detailed Feedback -->
-          <div class="space-y-3">
-            <div class="bg-slate-950/40 p-3.5 rounded-xl border border-emerald-500/20 text-xs">
-              <span class="font-bold text-emerald-400 block mb-1">🟢 Отличное начало</span>
-              <p class="text-slate-300">Введение цепляет внимание. Четко выражена страсть к направлению Computer Science.</p>
-            </div>
-            <div class="bg-slate-950/40 p-3.5 rounded-xl border border-amber-500/20 text-xs">
-              <span class="font-bold text-amber-400 block mb-1">⚠️ Требует улучшения (Абзац 3)</span>
-              <p class="text-slate-300">Слишком общая фраза <i>«I am a hard working person»</i>. Замените её конкретным кейсом из вашего хакатона или проекта.</p>
+          <!-- Dynamic Feedback Container -->
+          <div id="ai-feedback" class="space-y-3">
+            <div class="text-center text-slate-500 text-xs py-12">
+              Нажмите «Проанализировать через AI», чтобы получить подробный разбор сильных сторон и ошибок.
             </div>
           </div>
-        </div>
-
-        <!-- Action Bar -->
-        <div class="mt-6 pt-4 border-t border-slate-800/80 flex gap-3">
-          <button class="w-full bg-slate-900 hover:bg-slate-800 text-xs py-2.5 rounded-xl transition text-slate-300 border border-slate-800 font-medium">
-            Сгенерировать улучшение
-          </button>
-          <button class="w-full bg-slate-900 hover:bg-slate-800 text-xs py-2.5 rounded-xl transition text-slate-300 border border-slate-800 font-medium">
-            Скачать PDF-отчет
-          </button>
         </div>
       </div>
 
     </div>
   </main>
 
+  <!-- JavaScript App Logic -->
+  <script>
+    // Подсчет слов в поле ввода
+    const textarea = document.getElementById('essay-input');
+    textarea.addEventListener('input', () => {
+      const words = textarea.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+      document.getElementById('word-count').innerText = `Слов: ${words}`;
+    });
+
+    // Главная функция вызова OpenAI API
+    async function analyzeEssay() {
+      const apiKey = document.getElementById('api-key').value.trim();
+      const essay = textarea.value.trim();
+      const univ = document.getElementById('univ-select').value;
+      const feedbackContainer = document.getElementById('ai-feedback');
+      const scoreVal = document.getElementById('score-val');
+      const verdictVal = document.getElementById('verdict-val');
+      const chanceVal = document.getElementById('chance-val');
+      const statusBadge = document.getElementById('status-badge');
+      const btn = document.getElementById('submit-btn');
+
+      if (!apiKey) {
+        alert("Пожалуйста, введите OpenAI API Key в верхнем поле!");
+        return;
+      }
+      if (!essay) {
+        alert("Пожалуйста, вставьте текст эссе!");
+        return;
+      }
+
+      // Анимация загрузки
+      btn.disabled = true;
+      btn.classList.add('opacity-50');
+      statusBadge.innerText = "Анализируем...";
+      statusBadge.className = "text-xs bg-indigo-500/10 text-indigo-400 px-3 py-1 rounded-full border border-indigo-500/20 font-semibold animate-pulse";
+      feedbackContainer.innerHTML = `
+        <div class="flex flex-col items-center justify-center py-12 gap-3">
+          <div class="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+          <p class="text-xs text-indigo-400 font-medium">ИИ оценивает структуру, стиль и логику...</p>
+        </div>
+      `;
+
+      const prompt = `
+      Ты — главный член приемной комиссии университета (${univ}). 
+      Проанализируй следующее эссе абитуриента и верни результат СТРОГО в формате JSON без разметки markdown.
+      
+      JSON структура:
+      {
+        "score": 85,
+        "verdict": "Выше среднего",
+        "chance": "75%",
+        "strengths": "Текст сильных сторон...",
+        "weaknesses": "Текст того, что нужно исправить...",
+        "recommendation": "Совет по улучшению..."
+      }
+      
+      Эссе:
+      "${essay}"
+      `;
+
+      try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: "gpt-4o",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.7
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          throw new Error(data.error.message);
+        }
+
+        const rawContent = data.choices[0].message.content;
+        const result = JSON.parse(rawContent.replace(/```json|```/g, '').trim());
+
+        // Отображение результатов
+        scoreVal.innerText = result.score;
+        verdictVal.innerText = result.verdict;
+        verdictVal.className = result.score >= 80 ? "text-xs text-emerald-400 font-semibold" : "text-xs text-amber-400 font-semibold";
+        chanceVal.innerText = `Шанс: ${result.chance}`;
+        statusBadge.innerText = "Готово";
+        statusBadge.className = "text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-semibold";
+
+        feedbackContainer.innerHTML = `
+          <div class="space-y-3">
+            <div class="bg-slate-950/40 p-3.5 rounded-xl border border-emerald-500/20 text-xs">
+              <span class="font-bold text-emerald-400 block mb-1">🟢 Сильные стороны</span>
+              <p class="text-slate-300 leading-relaxed">${result.strengths}</p>
+            </div>
+            <div class="bg-slate-950/40 p-3.5 rounded-xl border border-amber-500/20 text-xs">
+              <span class="font-bold text-amber-400 block mb-1">⚠️ Что нужно исправить</span>
+              <p class="text-slate-300 leading-relaxed">${result.weaknesses}</p>
+            </div>
+            <div class="bg-slate-950/40 p-3.5 rounded-xl border border-indigo-500/20 text-xs">
+              <span class="font-bold text-indigo-400 block mb-1">💡 Совет по улучшению</span>
+              <p class="text-slate-300 leading-relaxed">${result.recommendation}</p>
+            </div>
+          </div>
+        `;
+
+      } catch (err) {
+        statusBadge.innerText = "Ошибка";
+        statusBadge.className = "text-xs bg-red-500/10 text-red-400 px-3 py-1 rounded-full border border-red-500/20 font-semibold";
+        feedbackContainer.innerHTML = `<div class="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs"><b>Ошибка API:</b> ${err.message}</div>`;
+      } finally {
+        btn.disabled = false;
+        btn.classList.remove('opacity-50');
+      }
+    }
+  </script>
 </body>
 </html>
